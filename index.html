@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#111111">
+
+    <title>Moped-Navigator</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #111;
+            color: white;
+        }
+
+        .app {
+            max-width: 500px;
+            margin: auto;
+            min-height: 100vh;
+            background: #181818;
+        }
+
+        header {
+            padding: 20px;
+            text-align: center;
+            background: #222;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 25px;
+        }
+
+        header p {
+            margin: 6px 0 0;
+            color: #aaa;
+        }
+
+        .map {
+            height: 320px;
+            margin: 15px;
+            border-radius: 18px;
+            background:
+                linear-gradient(135deg, #333 25%, transparent 25%) -20px 0/40px 40px,
+                linear-gradient(225deg, #333 25%, transparent 25%) -20px 0/40px 40px,
+                linear-gradient(315deg, #333 25%, transparent 25%) 0 0/40px 40px,
+                linear-gradient(45deg, #333 25%, #222 25%) 0 0/40px 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+        }
+
+        .location {
+            text-align: center;
+            margin-top: -100px;
+            margin-bottom: 70px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            padding: 15px;
+        }
+
+        .stat {
+            background: #252525;
+            padding: 18px;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .stat-title {
+            color: #999;
+            font-size: 14px;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+            margin-top: 8px;
+        }
+
+        .start-button {
+            display: block;
+            width: calc(100% - 30px);
+            margin: 10px 15px 30px;
+            padding: 18px;
+            border: none;
+            border-radius: 15px;
+            background: #3b82f6;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .start-button:active {
+            transform: scale(0.98);
+        }
+
+        .info {
+            text-align: center;
+            padding-bottom: 25px;
+            color: #777;
+            font-size: 13px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <header>
+        <h1>🏍️ Moped-Navigator</h1>
+        <p>Dein Begleiter auf jeder Fahrt</p>
+    </header>
+
+    <div class="map">
+        🗺️
+    </div>
+
+    <div class="location">
+        📍 GPS wird später hinzugefügt
+    </div>
+
+    <div class="stats">
+
+        <div class="stat">
+            <div class="stat-title">Geschwindigkeit</div>
+            <div class="stat-value" id="speed">0 km/h</div>
+        </div>
+
+        <div class="stat">
+            <div class="stat-title">Strecke</div>
+            <div class="stat-value" id="distance">0,00 km</div>
+        </div>
+
+        <div class="stat">
+            <div class="stat-title">Fahrzeit</div>
+            <div class="stat-value" id="time">00:00</div>
+        </div>
+
+        <div class="stat">
+            <div class="stat-title">Reichweite</div>
+            <div class="stat-value">-- km</div>
+        </div>
+
+    </div>
+
+    <button class="start-button" id="startButton" onclick="startRide()">
+        🏁 FAHRT STARTEN
+    </button>
+
+    <div class="info">
+        Moped-Navigator – Version 0.1
+    </div>
+
+</div>
+
+<script>
+
+let startTime;
+let timer;
+let running = false;
+
+function startRide() {
+
+    if (!running) {
+
+        running = true;
+
+        startTime = Date.now();
+
+        document.getElementById("startButton").innerText =
+            "🛑 FAHRT BEENDEN";
+
+        timer = setInterval(updateTime, 1000);
+
+    } else {
+
+        running = false;
+
+        clearInterval(timer);
+
+        document.getElementById("startButton").innerText =
+            "🏁 FAHRT STARTEN";
+    }
+}
+
+function updateTime() {
+
+    if (!running) return;
+
+    let seconds = Math.floor(
+        (Date.now() - startTime) / 1000
+    );
+
+    let minutes = Math.floor(seconds / 60);
+
+    seconds = seconds % 60;
+
+    let minText = String(minutes).padStart(2, "0");
+    let secText = String(seconds).padStart(2, "0");
+
+    document.getElementById("time").innerText =
+        minText + ":" + secText;
+}
+
+</script>
+
+</body>
+</html>
