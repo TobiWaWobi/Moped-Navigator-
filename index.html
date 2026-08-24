@@ -1,168 +1,500 @@
 <!DOCTYPE html>
 <html lang="de">
+
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#111827">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<meta name="theme-color"
+      content="#111827">
 
 <title>Moped-Navigator</title>
 
 <link
-rel="stylesheet"
-href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
 />
 
 <style>
+
 * {
     box-sizing: border-box;
 }
 
 body {
+
     margin: 0;
+
     font-family: Arial, sans-serif;
+
     background: #111827;
+
     color: white;
 }
 
 .app {
+
     max-width: 600px;
+
     margin: auto;
+
     min-height: 100vh;
+
     background: #181818;
 }
 
 header {
+
     padding: 20px;
+
     text-align: center;
+
     background: #222;
 }
 
 header h1 {
+
     margin: 0;
+
     font-size: 26px;
 }
 
 header p {
+
     margin: 6px 0 0;
+
     color: #aaa;
 }
 
+
+/* =========================
+   KARTE
+   ========================= */
+
 #map {
+
     height: 400px;
+
     margin: 15px;
+
     border-radius: 18px;
+
     overflow: hidden;
 }
 
+
+/* =========================
+   GPS STATUS
+   ========================= */
+
 .gps-status {
+
     text-align: center;
+
     padding: 5px 15px 15px;
+
     color: #aaa;
 }
 
+
+/* =========================
+   STATISTIK
+   ========================= */
+
 .stats {
+
     display: grid;
+
     grid-template-columns: 1fr 1fr;
+
     gap: 12px;
+
     padding: 15px;
 }
 
 .stat {
+
     background: #252525;
+
     padding: 18px;
+
     border-radius: 15px;
+
     text-align: center;
 }
 
 .stat-title {
+
     color: #999;
+
     font-size: 14px;
 }
 
 .stat-value {
+
     font-size: 26px;
+
     font-weight: bold;
+
     margin-top: 8px;
 }
 
+
+/* =========================
+   START BUTTON
+   ========================= */
+
 .start-button {
+
     display: block;
+
     width: calc(100% - 30px);
+
     margin: 10px 15px 30px;
+
     padding: 18px;
+
     border: none;
+
     border-radius: 15px;
+
     background: #2563eb;
+
     color: white;
+
     font-size: 18px;
+
     font-weight: bold;
+
     cursor: pointer;
 }
 
-.info {
+
+/* =========================
+   MOPED BEREICH
+   ========================= */
+
+#moped-section {
+
+    padding: 20px;
+
+    background: #202020;
+}
+
+#moped-section h2 {
+
     text-align: center;
-    padding-bottom: 25px;
+}
+
+#moped-section input {
+
+    display: block;
+
+    width: 100%;
+
+    margin: 8px 0;
+
+    padding: 13px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    font-size: 16px;
+}
+
+#moped-section button {
+
+    width: 100%;
+
+    margin-top: 8px;
+
+    padding: 13px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background: #2563eb;
+
+    color: white;
+
+    font-size: 16px;
+
+    font-weight: bold;
+}
+
+#mopedList {
+
+    margin-top: 20px;
+}
+
+.moped-card {
+
+    background: #303030;
+
+    padding: 15px;
+
+    margin-top: 10px;
+
+    border-radius: 12px;
+}
+
+.moped-card h3 {
+
+    margin-top: 0;
+}
+
+
+/* =========================
+   INFO
+   ========================= */
+
+.info {
+
+    text-align: center;
+
+    padding: 25px;
+
     color: #777;
+
     font-size: 13px;
 }
+
 </style>
+
 </head>
+
 
 <body>
 
+
 <div class="app">
 
+
 <header>
+
     <h1>🏍️ Moped-Navigator</h1>
-    <p>Dein Begleiter auf jeder Fahrt</p>
+
+    <p>
+        Dein Begleiter auf jeder Fahrt
+    </p>
+
 </header>
+
+
+<!-- =========================
+     KARTE
+     ========================= -->
 
 <div id="map"></div>
 
-<div class="gps-status" id="gpsStatus">
+
+<div
+    class="gps-status"
+    id="gpsStatus"
+>
+
     📍 GPS noch nicht gestartet
+
 </div>
+
+
+<!-- =========================
+     FAHRDATEN
+     ========================= -->
 
 <div class="stats">
 
-    <div class="stat">
-        <div class="stat-title">Geschwindigkeit</div>
-        <div class="stat-value" id="speed">0 km/h</div>
-    </div>
 
     <div class="stat">
-        <div class="stat-title">Strecke</div>
-        <div class="stat-value" id="distance">0,00 km</div>
+
+        <div class="stat-title">
+
+            Geschwindigkeit
+
+        </div>
+
+        <div
+            class="stat-value"
+            id="speed"
+        >
+
+            0 km/h
+
+        </div>
+
     </div>
 
-    <div class="stat">
-        <div class="stat-title">Fahrzeit</div>
-        <div class="stat-value" id="time">00:00</div>
-    </div>
 
     <div class="stat">
-        <div class="stat-title">Höhe</div>
-        <div class="stat-value" id="altitude">-- m</div>
+
+        <div class="stat-title">
+
+            Strecke
+
+        </div>
+
+        <div
+            class="stat-value"
+            id="distance"
+        >
+
+            0,00 km
+
+        </div>
+
     </div>
+
+
+    <div class="stat">
+
+        <div class="stat-title">
+
+            Fahrzeit
+
+        </div>
+
+        <div
+            class="stat-value"
+            id="time"
+        >
+
+            00:00
+
+        </div>
+
+    </div>
+
+
+    <div class="stat">
+
+        <div class="stat-title">
+
+            Höhe
+
+        </div>
+
+        <div
+            class="stat-value"
+            id="altitude"
+        >
+
+            -- m
+
+        </div>
+
+    </div>
+
 
 </div>
 
-<button class="start-button" id="startButton" onclick="toggleRide()">
+
+<!-- =========================
+     FAHRT BUTTON
+     ========================= -->
+
+<button
+    class="start-button"
+    id="startButton"
+    onclick="toggleRide()"
+>
+
     🏁 FAHRT STARTEN
+
 </button>
 
-<div class="info">
-    Moped-Navigator – Version 0.2
-</div>
+
+<!-- =========================
+     MOPEDS
+     ========================= -->
+
+<div id="moped-section">
+
+    <h2>🛵 Meine Mopeds</h2>
+
+
+    <input
+        id="mopedName"
+        type="text"
+        placeholder="Name, z. B. Mein Moped"
+    >
+
+
+    <input
+        id="mopedModel"
+        type="text"
+        placeholder="Modell"
+    >
+
+
+    <input
+        id="tankSize"
+        type="number"
+        step="0.1"
+        placeholder="Tankgröße (Liter)"
+    >
+
+
+    <input
+        id="consumption"
+        type="number"
+        step="0.1"
+        placeholder="Verbrauch (L/100 km)"
+    >
+
+
+    <input
+        id="currentFuel"
+        type="number"
+        step="0.1"
+        placeholder="Aktueller Tankinhalt (Liter)"
+    >
+
+
+    <button onclick="saveNewMoped()">
+
+        🛵 Moped hinzufügen
+
+    </button>
+
+
+    <div id="mopedList"></div>
 
 </div>
+
+
+<div class="info">
+
+    Moped-Navigator – Version 0.3
+
+</div>
+
+
+</div>
+
+
+<!-- =========================
+     LEAFLET
+     ========================= -->
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
+
 <script>
 
+
+/* =========================
+   VARIABLEN
+   ========================= */
+
 let map;
+
 let userMarker;
+
 let routeLine;
 
 let watchId = null;
@@ -170,6 +502,7 @@ let watchId = null;
 let running = false;
 
 let startTime = null;
+
 let timer = null;
 
 let totalDistance = 0;
@@ -179,45 +512,85 @@ let lastPosition = null;
 let routeCoordinates = [];
 
 
-/* Karte erstellen */
+/* =========================
+   KARTE ERSTELLEN
+   ========================= */
 
-map = L.map("map").setView([51.1657, 10.4515], 6);
+map = L.map("map").setView(
+    [51.1657, 10.4515],
+    6
+);
+
 
 L.tileLayer(
+
     "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+
     {
-        attribution: "&copy; OpenStreetMap-Mitwirkende"
+
+        attribution:
+            "&copy; OpenStreetMap-Mitwirkende"
+
     }
+
 ).addTo(map);
 
 
-/* Route */
+/* =========================
+   ROUTE
+   ========================= */
 
-routeLine = L.polyline([], {
-    color: "#2563eb",
-    weight: 5
-}).addTo(map);
+routeLine = L.polyline(
+
+    [],
+
+    {
+
+        color: "#2563eb",
+
+        weight: 5
+
+    }
+
+).addTo(map);
 
 
-/* Fahrt starten / beenden */
+/* =========================
+   START / STOP
+   ========================= */
 
 function toggleRide() {
 
-    if (!running) {
-
-        startRide();
-
-    } else {
+    if (running) {
 
         stopRide();
 
+    } else {
+
+        startRide();
+
     }
+
 }
 
 
-/* Fahrt starten */
+/* =========================
+   FAHRT STARTEN
+   ========================= */
 
 function startRide() {
+
+    if (!navigator.geolocation) {
+
+        document.getElementById(
+            "gpsStatus"
+        ).innerText =
+            "❌ GPS wird nicht unterstützt.";
+
+        return;
+
+    }
+
 
     running = true;
 
@@ -227,193 +600,365 @@ function startRide() {
 
     routeCoordinates = [];
 
+
     routeLine.setLatLngs([]);
+
 
     startTime = Date.now();
 
-    document.getElementById("distance").innerText = "0,00 km";
 
-    document.getElementById("startButton").innerText =
+    document.getElementById(
+        "distance"
+    ).innerText =
+        "0,00 km";
+
+
+    document.getElementById(
+        "speed"
+    ).innerText =
+        "0 km/h";
+
+
+    document.getElementById(
+        "startButton"
+    ).innerText =
         "🛑 FAHRT BEENDEN";
 
-    document.getElementById("gpsStatus").innerText =
+
+    document.getElementById(
+        "gpsStatus"
+    ).innerText =
         "📍 GPS wird gesucht...";
 
-    timer = setInterval(updateTime, 1000);
 
-
-    if (!navigator.geolocation) {
-
-        document.getElementById("gpsStatus").innerText =
-            "❌ GPS wird von diesem Browser nicht unterstützt.";
-
-        return;
-    }
-
-
-    watchId = navigator.geolocation.watchPosition(
-
-        updateGPS,
-
-        gpsError,
-
-        {
-            enableHighAccuracy: true,
-            maximumAge: 1000,
-            timeout: 10000
-        }
-
+    timer = setInterval(
+        updateTime,
+        1000
     );
+
+
+    watchId =
+        navigator.geolocation.watchPosition(
+
+            updateGPS,
+
+            gpsError,
+
+            {
+
+                enableHighAccuracy: true,
+
+                maximumAge: 1000,
+
+                timeout: 10000
+
+            }
+
+        );
+
 }
 
 
-/* Fahrt beenden */
+/* =========================
+   FAHRT BEENDEN
+   ========================= */
 
 function stopRide() {
 
     running = false;
 
+
     if (watchId !== null) {
 
-        navigator.geolocation.clearWatch(watchId);
+        navigator.geolocation.clearWatch(
+            watchId
+        );
 
         watchId = null;
+
     }
 
-    clearInterval(timer);
 
-    document.getElementById("startButton").innerText =
+    if (timer !== null) {
+
+        clearInterval(timer);
+
+        timer = null;
+
+    }
+
+
+    document.getElementById(
+        "startButton"
+    ).innerText =
         "🏁 FAHRT STARTEN";
 
-    document.getElementById("gpsStatus").innerText =
+
+    document.getElementById(
+        "gpsStatus"
+    ).innerText =
         "⏹️ Fahrt beendet";
+
 }
 
 
-/* GPS aktualisieren */
+/* =========================
+   GPS
+   ========================= */
 
 function updateGPS(position) {
 
-    const latitude = position.coords.latitude;
-    const longitude = position.coords.longitude;
 
-    const accuracy = position.coords.accuracy;
+    const latitude =
+        position.coords.latitude;
 
-    const speedGPS = position.coords.speed;
 
-    const altitude = position.coords.altitude;
+    const longitude =
+        position.coords.longitude;
+
+
+    const accuracy =
+        position.coords.accuracy;
+
+
+    const speedGPS =
+        position.coords.speed;
+
+
+    const altitude =
+        position.coords.altitude;
 
 
     const current = {
+
         lat: latitude,
+
         lng: longitude
+
     };
 
 
-    /* Geschwindigkeit */
+    /* =========================
+       GESCHWINDIGKEIT
+       ========================= */
 
     let speed = 0;
 
-    if (speedGPS !== null && speedGPS >= 0) {
 
-        speed = speedGPS * 3.6;
+    if (
+        speedGPS !== null &&
+        speedGPS >= 0
+    ) {
 
-    }
-
-
-    document.getElementById("speed").innerText =
-        Math.round(speed) + " km/h";
-
-
-    /* Höhe */
-
-    if (altitude !== null) {
-
-        document.getElementById("altitude").innerText =
-            Math.round(altitude) + " m";
-
-    }
+        speed =
+            speedGPS * 3.6;
 
 
-    /* Position */
+        if (speed < 2) {
 
-    if (!userMarker) {
-
-        userMarker = L.marker([latitude, longitude])
-            .addTo(map)
-            .bindPopup("📍 Deine Position");
-
-        map.setView(
-            [latitude, longitude],
-            17
-        );
-
-    } else {
-
-        userMarker.setLatLng([
-            latitude,
-            longitude
-        ]);
-
-    }
-
-
-    /* Strecke berechnen */
-
-    if (lastPosition) {
-
-        const distance = map.distance(
-            [lastPosition.lat, lastPosition.lng],
-            [current.lat, current.lng]
-        );
-
-        /*
-        Kleine GPS-Sprünge ignorieren
-        */
-
-        if (distance > 2 && distance < 1000) {
-
-            totalDistance += distance;
+            speed = 0;
 
         }
 
     }
 
 
-    lastPosition = current;
+    document.getElementById(
+        "speed"
+    ).innerText =
+        Math.round(speed)
+        + " km/h";
 
 
-    document.getElementById("distance").innerText =
-        (totalDistance / 1000)
+    /* =========================
+       HÖHE
+       ========================= */
+
+    if (altitude !== null) {
+
+        document.getElementById(
+            "altitude"
+        ).innerText =
+            Math.round(altitude)
+            + " m";
+
+    }
+
+
+    /* =========================
+       MARKER
+       ========================= */
+
+    if (!userMarker) {
+
+
+        userMarker = L.marker(
+
+            [
+                latitude,
+                longitude
+            ]
+
+        )
+
+        .addTo(map)
+
+        .bindPopup(
+            "📍 Deine Position"
+        );
+
+
+        map.setView(
+
+            [
+                latitude,
+                longitude
+            ],
+
+            17
+
+        );
+
+
+    } else {
+
+
+        userMarker.setLatLng(
+
+            [
+                latitude,
+                longitude
+            ]
+
+        );
+
+
+        map.panTo(
+
+            [
+                latitude,
+                longitude
+            ]
+
+        );
+
+    }
+
+
+    /* =========================
+       STRECKE
+       ========================= */
+
+    if (lastPosition) {
+
+
+        const distance =
+            map.distance(
+
+                [
+                    lastPosition.lat,
+                    lastPosition.lng
+                ],
+
+                [
+                    current.lat,
+                    current.lng
+                ]
+
+            );
+
+
+        /*
+        GPS-Ungenauigkeit
+        herausfiltern
+        */
+
+        if (
+
+            accuracy <= 30 &&
+
+            distance >= 3 &&
+
+            distance < 500
+
+        ) {
+
+            totalDistance +=
+                distance;
+
+        }
+
+    }
+
+
+    lastPosition =
+        current;
+
+
+    document.getElementById(
+        "distance"
+    ).innerText =
+
+        (
+            totalDistance / 1000
+        )
+
         .toFixed(2)
-        .replace(".", ",")
+
+        .replace(
+            ".",
+            ","
+        )
+
         + " km";
 
 
-    /* Route speichern */
+    /* =========================
+       ROUTE
+       ========================= */
 
-    routeCoordinates.push([
-        latitude,
-        longitude
-    ]);
+    routeCoordinates.push(
+
+        [
+            latitude,
+            longitude
+        ]
+
+    );
+
 
     routeLine.setLatLngs(
         routeCoordinates
     );
 
 
-    document.getElementById("gpsStatus").innerText =
+    /* =========================
+       GPS STATUS
+       ========================= */
+
+    document.getElementById(
+        "gpsStatus"
+    ).innerText =
+
         "📍 GPS aktiv • Genauigkeit ca. "
+
         + Math.round(accuracy)
+
         + " m";
+
 }
 
 
-/* GPS Fehler */
+/* =========================
+   GPS FEHLER
+   ========================= */
 
 function gpsError(error) {
 
-    let message = "❌ GPS konnte nicht verwendet werden.";
+
+    let message =
+        "❌ GPS konnte nicht verwendet werden.";
+
 
     if (error.code === 1) {
 
@@ -422,12 +967,14 @@ function gpsError(error) {
 
     }
 
+
     if (error.code === 2) {
 
         message =
             "❌ Standort konnte nicht gefunden werden.";
 
     }
+
 
     if (error.code === 3) {
 
@@ -436,299 +983,264 @@ function gpsError(error) {
 
     }
 
-    document.getElementById("gpsStatus").innerText =
+
+    document.getElementById(
+        "gpsStatus"
+    ).innerText =
         message;
+
 }
 
 
-/* Fahrzeit */
+/* =========================
+   FAHRZEIT
+   ========================= */
 
 function updateTime() {
 
-    if (!running) return;
+
+    if (!running) {
+
+        return;
+
+    }
+
 
     const elapsed =
+
         Math.floor(
-            (Date.now() - startTime) / 1000
+
+            (
+                Date.now()
+                - startTime
+            ) / 1000
+
         );
 
 
     const minutes =
-        Math.floor(elapsed / 60);
+        Math.floor(
+            elapsed / 60
+        );
+
 
     const seconds =
         elapsed % 60;
 
 
-    document.getElementById("time").innerText =
+    document.getElementById(
+        "time"
+    ).innerText =
 
-        String(minutes).padStart(2, "0")
+        String(minutes)
+            .padStart(2, "0")
+
         + ":"
-        + String(seconds).padStart(2, "0");
+
+        + String(seconds)
+            .padStart(2, "0");
+
 }
+
 
 </script>
+
+
+<!-- =========================
+     MOPED-DATEN
+     ========================= -->
+
 <script src="mopeds.js"></script>
- <div id="moped-section">
-  <h2>🛵 Meine Mopeds</h2>
 
-  <input id="mopedName" type="text" placeholder="Name, z. B. Mein Moped">
-  <input id="mopedModel" type="text" placeholder="Modell">
-  <input id="tankSize" type="number" placeholder="Tankgröße (Liter)">
-  <input id="consumption" type="number" step="0.1" placeholder="Verbrauch (L/100 km)">
-  <input id="currentFuel" type="number" step="0.1" placeholder="Aktueller Tankinhalt (Liter)">
-
-  <button onclick="saveNewMoped()">Moped hinzufügen</button>
-
-  <div id="mopedList"></div>
-</div>
 
 <script>
+
+
 function saveNewMoped() {
-  const name = document.getElementById("mopedName").value;
-  const model = document.getElementById("mopedModel").value;
-  const tankSize = document.getElementById("tankSize").value;
-  const consumption = document.getElementById("consumption").value;
-  const currentFuel = document.getElementById("currentFuel").value;
 
-  if (!name || !model || !tankSize || !consumption || !currentFuel) {
-    alert("Bitte alle Felder ausfüllen.");
-    return;
-  }
 
-  addMoped(name, model, tankSize, consumption, currentFuel);
+    const name =
+        document.getElementById(
+            "mopedName"
+        ).value;
 
-  document.getElementById("mopedName").value = "";
-  document.getElementById("mopedModel").value = "";
-  document.getElementById("tankSize").value = "";
-  document.getElementById("consumption").value = "";
-  document.getElementById("currentFuel").value = "";
 
-  showMopeds();
+    const model =
+        document.getElementById(
+            "mopedModel"
+        ).value;
+
+
+    const tankSize =
+        document.getElementById(
+            "tankSize"
+        ).value;
+
+
+    const consumption =
+        document.getElementById(
+            "consumption"
+        ).value;
+
+
+    const currentFuel =
+        document.getElementById(
+            "currentFuel"
+        ).value;
+
+
+    if (
+
+        !name ||
+        !model ||
+        !tankSize ||
+        !consumption ||
+        !currentFuel
+
+    ) {
+
+        alert(
+            "Bitte alle Felder ausfüllen."
+        );
+
+        return;
+
+    }
+
+
+    addMoped(
+
+        name,
+        model,
+        tankSize,
+        consumption,
+        currentFuel
+
+    );
+
+
+    document.getElementById(
+        "mopedName"
+    ).value = "";
+
+
+    document.getElementById(
+        "mopedModel"
+    ).value = "";
+
+
+    document.getElementById(
+        "tankSize"
+    ).value = "";
+
+
+    document.getElementById(
+        "consumption"
+    ).value = "";
+
+
+    document.getElementById(
+        "currentFuel"
+    ).value = "";
+
+
+    showMopeds();
+
 }
+
+
+/* =========================
+   MOPEDS ANZEIGEN
+   ========================= */
 
 function showMopeds() {
-  const list = document.getElementById("mopedList");
-  const mopeds = getMopeds();
 
-  list.innerHTML = "";
 
-  mopeds.forEach(moped => {
-    const range = calculateRange(moped);
+    const list =
+        document.getElementById(
+            "mopedList"
+        );
 
-    list.innerHTML += `
-      <div>
-        <h3>${moped.name}</h3>
-        <p>Modell: ${moped.model}</p>
-        <p>Reichweite: ${range.toFixed(0)} km</p>
-        <button onclick="removeMoped(${moped.id})">Löschen</button>
-      </div>
-    `;
-  });
+
+    const mopeds =
+        getMopeds();
+
+
+    list.innerHTML = "";
+
+
+    mopeds.forEach(
+
+        function(moped) {
+
+
+            const range =
+                calculateRange(
+                    moped
+                );
+
+
+            list.innerHTML += `
+
+                <div class="moped-card">
+
+                    <h3>
+                        🛵 ${moped.name}
+                    </h3>
+
+                    <p>
+                        Modell:
+                        ${moped.model}
+                    </p>
+
+                    <p>
+                        Reichweite:
+                        ${range.toFixed(0)}
+                        km
+                    </p>
+
+                    <button
+                        onclick="removeMoped(${moped.id})"
+                    >
+
+                        🗑️ Löschen
+
+                    </button>
+
+                </div>
+
+            `;
+
+        }
+
+    );
+
 }
+
+
+/* =========================
+   MOPED LÖSCHEN
+   ========================= */
 
 function removeMoped(id) {
-  deleteMoped(id);
-  showMopeds();
+
+    deleteMoped(id);
+
+    showMopeds();
+
 }
+
+
+/* =========================
+   MOPEDS LADEN
+   ========================= */
 
 showMopeds();
-</script>   
-<div id="ride-section">
-  <h2>🏍️ Fahrt</h2>
 
-  <div id="speed-display">0 km/h</div>
 
-  <div>
-    <strong>Strecke:</strong>
-    <span id="distance-display">0.00 km</span>
-  </div>
+</script>
 
-  <div>
-    <strong>Fahrzeit:</strong>
-    <span id="time-display">00:00:00</span>
-  </div>
 
-  <p id="gps-status">GPS wird noch nicht gestartet.</p>
-
-  <button onclick="startRide()">▶️ Fahrt starten</button>
-  <button onclick="stopRide()">⏹️ Fahrt beenden</button>
-</div>
-
-<script>
-let rideActive = false;
-let watchId = null;
-let startTime = null;
-let timerInterval = null;
-let lastPosition = null;
-let totalDistance = 0;
-
-function startRide() {
-  if (!navigator.geolocation) {
-    document.getElementById("gps-status").textContent =
-      "GPS wird von diesem Gerät nicht unterstützt.";
-    return;
-  }
-
-  rideActive = true;
-  startTime = Date.now();
-  lastPosition = null;
-  totalDistance = 0;
-
-  document.getElementById("gps-status").textContent =
-    "📍 GPS läuft...";
-
-  watchId = navigator.geolocation.watchPosition(
-    updateRide,
-    gpsError,
-    {
-      enableHighAccuracy: true,
-      maximumAge: 1000,
-      timeout: 10000
-    }
-  );
-
-  timerInterval = setInterval(updateTime, 1000);
-}
-
-function updateRide(position) {
-  if (!rideActive) return;
-
-  const accuracy = position.coords.accuracy;
-  let speed = position.coords.speed;
-
-  // GPS-Position mit schlechter Genauigkeit ignorieren
-  if (accuracy > 30) {
-    document.getElementById("gps-status").textContent =
-      "📍 GPS läuft – Signal wird verbessert...";
-    return;
-  }
-
-  // Geschwindigkeit berechnen
-  if (speed !== null && speed >= 0) {
-    let kmh = speed * 3.6;
-
-    // Kleine GPS-Schwankungen entfernen
-    if (kmh < 2) {
-      kmh = 0;
-    }
-
-    document.getElementById("speed-display").textContent =
-      kmh.toFixed(0) + " km/h";
-  }
-
-  // Strecke berechnen
-  if (lastPosition) {
-    const distance = calculateDistance(
-      lastPosition.coords.latitude,
-      lastPosition.coords.longitude,
-      position.coords.latitude,
-      position.coords.longitude
-    );
-
-    // Sehr kleine GPS-Schwankungen ignorieren
-    if (distance >= 0.005 && distance < 1) {
-      totalDistance += distance;
-    }
-  }
-
-  lastPosition = position;
-
-  document.getElementById("distance-display").textContent =
-    totalDistance.toFixed(2) + " km";
-
-  document.getElementById("gps-status").textContent =
-    "📍 GPS läuft – Genauigkeit: " +
-    Math.round(accuracy) +
-    " m";
-}
-  if (!rideActive) return;
-
-  const speed = position.coords.speed;
-
-  if (speed !== null && speed >= 0) {
-    const kmh = speed * 3.6;
-
-    document.getElementById("speed-display").textContent =
-      kmh.toFixed(0) + " km/h";
-  }
-
-  if (lastPosition) {
-    const distance = calculateDistance(
-      lastPosition.coords.latitude,
-      lastPosition.coords.longitude,
-      position.coords.latitude,
-      position.coords.longitude
-    );
-
-    if (distance < 0.1) {
-      totalDistance += distance;
-    }
-  }
-
-  lastPosition = position;
-
-  document.getElementById("distance-display").textContent =
-    totalDistance.toFixed(2) + " km";
-}
-
-function calculateDistance(lat1, lon1, lat2, lon2) {
-  const R = 6371;
-
-  const dLat = (lat2 - lat1) * Math.PI / 180;
-  const dLon = (lon2 - lon1) * Math.PI / 180;
-
-  const a =
-    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos(lat1 * Math.PI / 180) *
-    Math.cos(lat2 * Math.PI / 180) *
-    Math.sin(dLon / 2) * Math.sin(dLon / 2);
-
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-
-  return R * c;
-}
-
-function updateTime() {
-  if (!startTime) return;
-
-  const seconds = Math.floor(
-    (Date.now() - startTime) / 1000
-  );
-
-  const hours = Math.floor(seconds / 3600);
-  const minutes = Math.floor((seconds % 3600) / 60);
-  const secs = seconds % 60;
-
-  document.getElementById("time-display").textContent =
-    String(hours).padStart(2, "0") + ":" +
-    String(minutes).padStart(2, "0") + ":" +
-    String(secs).padStart(2, "0");
-}
-
-function stopRide() {
-  rideActive = false;
-
-  if (watchId !== null) {
-    navigator.geolocation.clearWatch(watchId);
-    watchId = null;
-  }
-
-  if (timerInterval !== null) {
-    clearInterval(timerInterval);
-    timerInterval = null;
-  }
-
-  document.getElementById("speed-display").textContent = "0 km/h";
-
-  document.getElementById("gps-status").textContent =
-    "Fahrt beendet.";
-}
-
-function gpsError(error) {
-  document.getElementById("gps-status").textContent =
-    "⚠️ GPS konnte nicht verwendet werden.";
-}
-</script>    
 </body>
+
 </html>
