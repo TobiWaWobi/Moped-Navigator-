@@ -534,6 +534,151 @@ function removeMoped(id) {
 
 showMopeds();
 </script>   
-    
+<div id="ride-section">
+  <h2>🏍️ Fahrt</h2>
+
+  <div id="speed-display">0 km/h</div>
+
+  <div>
+    <strong>Strecke:</strong>
+    <span id="distance-display">0.00 km</span>
+  </div>
+
+  <div>
+    <strong>Fahrzeit:</strong>
+    <span id="time-display">00:00:00</span>
+  </div>
+
+  <p id="gps-status">GPS wird noch nicht gestartet.</p>
+
+  <button onclick="startRide()">▶️ Fahrt starten</button>
+  <button onclick="stopRide()">⏹️ Fahrt beenden</button>
+</div>
+
+<script>
+let rideActive = false;
+let watchId = null;
+let startTime = null;
+let timerInterval = null;
+let lastPosition = null;
+let totalDistance = 0;
+
+function startRide() {
+  if (!navigator.geolocation) {
+    document.getElementById("gps-status").textContent =
+      "GPS wird von diesem Gerät nicht unterstützt.";
+    return;
+  }
+
+  rideActive = true;
+  startTime = Date.now();
+  lastPosition = null;
+  totalDistance = 0;
+
+  document.getElementById("gps-status").textContent =
+    "📍 GPS läuft...";
+
+  watchId = navigator.geolocation.watchPosition(
+    updateRide,
+    gpsError,
+    {
+      enableHighAccuracy: true,
+      maximumAge: 1000,
+      timeout: 10000
+    }
+  );
+
+  timerInterval = setInterval(updateTime, 1000);
+}
+
+function updateRide(position) {
+  if (!rideActive) return;
+
+  const speed = position.coords.speed;
+
+  if (speed !== null && speed >= 0) {
+    const kmh = speed * 3.6;
+
+    document.getElementById("speed-display").textContent =
+      kmh.toFixed(0) + " km/h";
+  }
+
+  if (lastPosition) {
+    const distance = calculateDistance(
+      lastPosition.coords.latitude,
+      lastPosition.coords.longitude,
+      position.coords.latitude,
+      position.coords.longitude
+    );
+
+    if (distance < 0.1) {
+      totalDistance += distance;
+    }
+  }
+
+  lastPosition = position;
+
+  document.getElementById("distance-display").textContent =
+    totalDistance.toFixed(2) + " km";
+}
+
+function calculateDistance(lat1, lon1, lat2, lon2) {
+  const R = 6371;
+
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(lat1 * Math.PI / 180) *
+    Math.cos(lat2 * Math.PI / 180) *
+    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+  return R * c;
+}
+
+function updateTime() {
+  if (!startTime) return;
+
+  const seconds = Math.floor(
+    (Date.now() - startTime) / 1000
+  );
+
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  const secs = seconds % 60;
+
+  document.getElementById("time-display").textContent =
+    String(hours).padStart(2, "0") + ":" +
+    String(minutes).padStart(2, "0") + ":" +
+    String(secs).padStart(2, "0");
+}
+
+function stopRide() {
+  rideActive = false;
+
+  if (watchId !== null) {
+    navigator.geolocation.clearWatch(watchId);
+    watchId = null;
+  }
+
+  if (timerInterval !== null) {
+    clearInterval(timerInterval);
+    timerInterval = null;
+  }
+
+  document.getElementById("speed-display").textContent = "0 km/h";
+
+  document.getElementById("gps-status").textContent =
+    "Fahrt beendet.";
+}
+
+function gpsError(error) {
+  document.getElementById("gps-status").textContent =
+    "⚠️ GPS konnte nicht verwendet werden.";
+}
+</script>    
 </body>
 </html>
