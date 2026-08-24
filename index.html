@@ -1,218 +1,470 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#111111">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#111827">
 
-    <title>Moped-Navigator</title>
+<title>Moped-Navigator</title>
 
-    <style>
-        * {
-            box-sizing: border-box;
-        }
+<link
+rel="stylesheet"
+href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+/>
 
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #111;
-            color: white;
-        }
+<style>
+* {
+    box-sizing: border-box;
+}
 
-        .app {
-            max-width: 500px;
-            margin: auto;
-            min-height: 100vh;
-            background: #181818;
-        }
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #111827;
+    color: white;
+}
 
-        header {
-            padding: 20px;
-            text-align: center;
-            background: #222;
-        }
+.app {
+    max-width: 600px;
+    margin: auto;
+    min-height: 100vh;
+    background: #181818;
+}
 
-        header h1 {
-            margin: 0;
-            font-size: 25px;
-        }
+header {
+    padding: 20px;
+    text-align: center;
+    background: #222;
+}
 
-        header p {
-            margin: 6px 0 0;
-            color: #aaa;
-        }
+header h1 {
+    margin: 0;
+    font-size: 26px;
+}
 
-        .map {
-            height: 320px;
-            margin: 15px;
-            border-radius: 18px;
-            background:
-                linear-gradient(135deg, #333 25%, transparent 25%) -20px 0/40px 40px,
-                linear-gradient(225deg, #333 25%, transparent 25%) -20px 0/40px 40px,
-                linear-gradient(315deg, #333 25%, transparent 25%) 0 0/40px 40px,
-                linear-gradient(45deg, #333 25%, #222 25%) 0 0/40px 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 60px;
-        }
+header p {
+    margin: 6px 0 0;
+    color: #aaa;
+}
 
-        .location {
-            text-align: center;
-            margin-top: -100px;
-            margin-bottom: 70px;
-        }
+#map {
+    height: 400px;
+    margin: 15px;
+    border-radius: 18px;
+    overflow: hidden;
+}
 
-        .stats {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            padding: 15px;
-        }
+.gps-status {
+    text-align: center;
+    padding: 5px 15px 15px;
+    color: #aaa;
+}
 
-        .stat {
-            background: #252525;
-            padding: 18px;
-            border-radius: 15px;
-            text-align: center;
-        }
+.stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    padding: 15px;
+}
 
-        .stat-title {
-            color: #999;
-            font-size: 14px;
-        }
+.stat {
+    background: #252525;
+    padding: 18px;
+    border-radius: 15px;
+    text-align: center;
+}
 
-        .stat-value {
-            font-size: 28px;
-            font-weight: bold;
-            margin-top: 8px;
-        }
+.stat-title {
+    color: #999;
+    font-size: 14px;
+}
 
-        .start-button {
-            display: block;
-            width: calc(100% - 30px);
-            margin: 10px 15px 30px;
-            padding: 18px;
-            border: none;
-            border-radius: 15px;
-            background: #3b82f6;
-            color: white;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-        }
+.stat-value {
+    font-size: 26px;
+    font-weight: bold;
+    margin-top: 8px;
+}
 
-        .start-button:active {
-            transform: scale(0.98);
-        }
+.start-button {
+    display: block;
+    width: calc(100% - 30px);
+    margin: 10px 15px 30px;
+    padding: 18px;
+    border: none;
+    border-radius: 15px;
+    background: #2563eb;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+}
 
-        .info {
-            text-align: center;
-            padding-bottom: 25px;
-            color: #777;
-            font-size: 13px;
-        }
-    </style>
+.info {
+    text-align: center;
+    padding-bottom: 25px;
+    color: #777;
+    font-size: 13px;
+}
+</style>
 </head>
 
 <body>
 
 <div class="app">
 
-    <header>
-        <h1>🏍️ Moped-Navigator</h1>
-        <p>Dein Begleiter auf jeder Fahrt</p>
-    </header>
+<header>
+    <h1>🏍️ Moped-Navigator</h1>
+    <p>Dein Begleiter auf jeder Fahrt</p>
+</header>
 
-    <div class="map">
-        🗺️
+<div id="map"></div>
+
+<div class="gps-status" id="gpsStatus">
+    📍 GPS noch nicht gestartet
+</div>
+
+<div class="stats">
+
+    <div class="stat">
+        <div class="stat-title">Geschwindigkeit</div>
+        <div class="stat-value" id="speed">0 km/h</div>
     </div>
 
-    <div class="location">
-        📍 GPS wird später hinzugefügt
+    <div class="stat">
+        <div class="stat-title">Strecke</div>
+        <div class="stat-value" id="distance">0,00 km</div>
     </div>
 
-    <div class="stats">
-
-        <div class="stat">
-            <div class="stat-title">Geschwindigkeit</div>
-            <div class="stat-value" id="speed">0 km/h</div>
-        </div>
-
-        <div class="stat">
-            <div class="stat-title">Strecke</div>
-            <div class="stat-value" id="distance">0,00 km</div>
-        </div>
-
-        <div class="stat">
-            <div class="stat-title">Fahrzeit</div>
-            <div class="stat-value" id="time">00:00</div>
-        </div>
-
-        <div class="stat">
-            <div class="stat-title">Reichweite</div>
-            <div class="stat-value">-- km</div>
-        </div>
-
+    <div class="stat">
+        <div class="stat-title">Fahrzeit</div>
+        <div class="stat-value" id="time">00:00</div>
     </div>
 
-    <button class="start-button" id="startButton" onclick="startRide()">
-        🏁 FAHRT STARTEN
-    </button>
-
-    <div class="info">
-        Moped-Navigator – Version 0.1
+    <div class="stat">
+        <div class="stat-title">Höhe</div>
+        <div class="stat-value" id="altitude">-- m</div>
     </div>
 
 </div>
 
+<button class="start-button" id="startButton" onclick="toggleRide()">
+    🏁 FAHRT STARTEN
+</button>
+
+<div class="info">
+    Moped-Navigator – Version 0.2
+</div>
+
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
 <script>
 
-let startTime;
-let timer;
+let map;
+let userMarker;
+let routeLine;
+
+let watchId = null;
+
 let running = false;
 
-function startRide() {
+let startTime = null;
+let timer = null;
+
+let totalDistance = 0;
+
+let lastPosition = null;
+
+let routeCoordinates = [];
+
+
+/* Karte erstellen */
+
+map = L.map("map").setView([51.1657, 10.4515], 6);
+
+L.tileLayer(
+    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+    {
+        attribution: "&copy; OpenStreetMap-Mitwirkende"
+    }
+).addTo(map);
+
+
+/* Route */
+
+routeLine = L.polyline([], {
+    color: "#2563eb",
+    weight: 5
+}).addTo(map);
+
+
+/* Fahrt starten / beenden */
+
+function toggleRide() {
 
     if (!running) {
 
-        running = true;
-
-        startTime = Date.now();
-
-        document.getElementById("startButton").innerText =
-            "🛑 FAHRT BEENDEN";
-
-        timer = setInterval(updateTime, 1000);
+        startRide();
 
     } else {
 
-        running = false;
+        stopRide();
 
-        clearInterval(timer);
-
-        document.getElementById("startButton").innerText =
-            "🏁 FAHRT STARTEN";
     }
 }
+
+
+/* Fahrt starten */
+
+function startRide() {
+
+    running = true;
+
+    totalDistance = 0;
+
+    lastPosition = null;
+
+    routeCoordinates = [];
+
+    routeLine.setLatLngs([]);
+
+    startTime = Date.now();
+
+    document.getElementById("distance").innerText = "0,00 km";
+
+    document.getElementById("startButton").innerText =
+        "🛑 FAHRT BEENDEN";
+
+    document.getElementById("gpsStatus").innerText =
+        "📍 GPS wird gesucht...";
+
+    timer = setInterval(updateTime, 1000);
+
+
+    if (!navigator.geolocation) {
+
+        document.getElementById("gpsStatus").innerText =
+            "❌ GPS wird von diesem Browser nicht unterstützt.";
+
+        return;
+    }
+
+
+    watchId = navigator.geolocation.watchPosition(
+
+        updateGPS,
+
+        gpsError,
+
+        {
+            enableHighAccuracy: true,
+            maximumAge: 1000,
+            timeout: 10000
+        }
+
+    );
+}
+
+
+/* Fahrt beenden */
+
+function stopRide() {
+
+    running = false;
+
+    if (watchId !== null) {
+
+        navigator.geolocation.clearWatch(watchId);
+
+        watchId = null;
+    }
+
+    clearInterval(timer);
+
+    document.getElementById("startButton").innerText =
+        "🏁 FAHRT STARTEN";
+
+    document.getElementById("gpsStatus").innerText =
+        "⏹️ Fahrt beendet";
+}
+
+
+/* GPS aktualisieren */
+
+function updateGPS(position) {
+
+    const latitude = position.coords.latitude;
+    const longitude = position.coords.longitude;
+
+    const accuracy = position.coords.accuracy;
+
+    const speedGPS = position.coords.speed;
+
+    const altitude = position.coords.altitude;
+
+
+    const current = {
+        lat: latitude,
+        lng: longitude
+    };
+
+
+    /* Geschwindigkeit */
+
+    let speed = 0;
+
+    if (speedGPS !== null && speedGPS >= 0) {
+
+        speed = speedGPS * 3.6;
+
+    }
+
+
+    document.getElementById("speed").innerText =
+        Math.round(speed) + " km/h";
+
+
+    /* Höhe */
+
+    if (altitude !== null) {
+
+        document.getElementById("altitude").innerText =
+            Math.round(altitude) + " m";
+
+    }
+
+
+    /* Position */
+
+    if (!userMarker) {
+
+        userMarker = L.marker([latitude, longitude])
+            .addTo(map)
+            .bindPopup("📍 Deine Position");
+
+        map.setView(
+            [latitude, longitude],
+            17
+        );
+
+    } else {
+
+        userMarker.setLatLng([
+            latitude,
+            longitude
+        ]);
+
+    }
+
+
+    /* Strecke berechnen */
+
+    if (lastPosition) {
+
+        const distance = map.distance(
+            [lastPosition.lat, lastPosition.lng],
+            [current.lat, current.lng]
+        );
+
+        /*
+        Kleine GPS-Sprünge ignorieren
+        */
+
+        if (distance > 2 && distance < 1000) {
+
+            totalDistance += distance;
+
+        }
+
+    }
+
+
+    lastPosition = current;
+
+
+    document.getElementById("distance").innerText =
+        (totalDistance / 1000)
+        .toFixed(2)
+        .replace(".", ",")
+        + " km";
+
+
+    /* Route speichern */
+
+    routeCoordinates.push([
+        latitude,
+        longitude
+    ]);
+
+    routeLine.setLatLngs(
+        routeCoordinates
+    );
+
+
+    document.getElementById("gpsStatus").innerText =
+        "📍 GPS aktiv • Genauigkeit ca. "
+        + Math.round(accuracy)
+        + " m";
+}
+
+
+/* GPS Fehler */
+
+function gpsError(error) {
+
+    let message = "❌ GPS konnte nicht verwendet werden.";
+
+    if (error.code === 1) {
+
+        message =
+            "❌ Standortzugriff wurde verweigert.";
+
+    }
+
+    if (error.code === 2) {
+
+        message =
+            "❌ Standort konnte nicht gefunden werden.";
+
+    }
+
+    if (error.code === 3) {
+
+        message =
+            "❌ GPS-Zeitüberschreitung.";
+
+    }
+
+    document.getElementById("gpsStatus").innerText =
+        message;
+}
+
+
+/* Fahrzeit */
 
 function updateTime() {
 
     if (!running) return;
 
-    let seconds = Math.floor(
-        (Date.now() - startTime) / 1000
-    );
+    const elapsed =
+        Math.floor(
+            (Date.now() - startTime) / 1000
+        );
 
-    let minutes = Math.floor(seconds / 60);
 
-    seconds = seconds % 60;
+    const minutes =
+        Math.floor(elapsed / 60);
 
-    let minText = String(minutes).padStart(2, "0");
-    let secText = String(seconds).padStart(2, "0");
+    const seconds =
+        elapsed % 60;
+
 
     document.getElementById("time").innerText =
-        minText + ":" + secText;
+
+        String(minutes).padStart(2, "0")
+        + ":"
+        + String(seconds).padStart(2, "0");
 }
 
 </script>
