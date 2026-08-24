@@ -594,6 +594,56 @@ function startRide() {
 function updateRide(position) {
   if (!rideActive) return;
 
+  const accuracy = position.coords.accuracy;
+  let speed = position.coords.speed;
+
+  // GPS-Position mit schlechter Genauigkeit ignorieren
+  if (accuracy > 30) {
+    document.getElementById("gps-status").textContent =
+      "📍 GPS läuft – Signal wird verbessert...";
+    return;
+  }
+
+  // Geschwindigkeit berechnen
+  if (speed !== null && speed >= 0) {
+    let kmh = speed * 3.6;
+
+    // Kleine GPS-Schwankungen entfernen
+    if (kmh < 2) {
+      kmh = 0;
+    }
+
+    document.getElementById("speed-display").textContent =
+      kmh.toFixed(0) + " km/h";
+  }
+
+  // Strecke berechnen
+  if (lastPosition) {
+    const distance = calculateDistance(
+      lastPosition.coords.latitude,
+      lastPosition.coords.longitude,
+      position.coords.latitude,
+      position.coords.longitude
+    );
+
+    // Sehr kleine GPS-Schwankungen ignorieren
+    if (distance >= 0.005 && distance < 1) {
+      totalDistance += distance;
+    }
+  }
+
+  lastPosition = position;
+
+  document.getElementById("distance-display").textContent =
+    totalDistance.toFixed(2) + " km";
+
+  document.getElementById("gps-status").textContent =
+    "📍 GPS läuft – Genauigkeit: " +
+    Math.round(accuracy) +
+    " m";
+}
+  if (!rideActive) return;
+
   const speed = position.coords.speed;
 
   if (speed !== null && speed >= 0) {
