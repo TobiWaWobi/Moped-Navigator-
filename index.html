@@ -14,8 +14,8 @@
 <title>Moped-Navigator</title>
 
 <link
-    rel="stylesheet"
-    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+rel="stylesheet"
+href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
 />
 
 <style>
@@ -25,242 +25,136 @@
 }
 
 body {
-
     margin: 0;
-
     font-family: Arial, sans-serif;
-
     background: #111827;
-
     color: white;
 }
 
 .app {
-
     max-width: 600px;
-
     margin: auto;
-
     min-height: 100vh;
-
     background: #181818;
 }
 
 header {
-
     padding: 20px;
-
     text-align: center;
-
     background: #222;
 }
 
 header h1 {
-
     margin: 0;
-
     font-size: 26px;
 }
 
 header p {
-
     margin: 6px 0 0;
-
     color: #aaa;
 }
 
-
-/* =========================
-   KARTE
-   ========================= */
-
 #map {
-
     height: 400px;
-
     margin: 15px;
-
     border-radius: 18px;
-
     overflow: hidden;
 }
 
-
-/* =========================
-   GPS STATUS
-   ========================= */
-
 .gps-status {
-
     text-align: center;
-
     padding: 5px 15px 15px;
-
     color: #aaa;
 }
 
-
-/* =========================
-   STATISTIK
-   ========================= */
-
 .stats {
-
     display: grid;
-
     grid-template-columns: 1fr 1fr;
-
     gap: 12px;
-
     padding: 15px;
 }
 
 .stat {
-
     background: #252525;
-
     padding: 18px;
-
     border-radius: 15px;
-
     text-align: center;
 }
 
 .stat-title {
-
     color: #999;
-
     font-size: 14px;
 }
 
 .stat-value {
-
     font-size: 26px;
-
     font-weight: bold;
-
     margin-top: 8px;
 }
 
-
-/* =========================
-   START BUTTON
-   ========================= */
-
 .start-button {
-
     display: block;
-
     width: calc(100% - 30px);
-
     margin: 10px 15px 30px;
-
     padding: 18px;
-
     border: none;
-
     border-radius: 15px;
-
     background: #2563eb;
-
     color: white;
-
     font-size: 18px;
-
     font-weight: bold;
-
-    cursor: pointer;
 }
 
-
-/* =========================
-   MOPED BEREICH
-   ========================= */
-
 #moped-section {
-
     padding: 20px;
-
     background: #202020;
 }
 
 #moped-section h2 {
-
     text-align: center;
 }
 
 #moped-section input {
-
     display: block;
-
     width: 100%;
-
     margin: 8px 0;
-
     padding: 13px;
-
     border: none;
-
     border-radius: 10px;
-
     font-size: 16px;
 }
 
 #moped-section button {
-
     width: 100%;
-
     margin-top: 8px;
-
     padding: 13px;
-
     border: none;
-
     border-radius: 10px;
-
     background: #2563eb;
-
     color: white;
-
     font-size: 16px;
-
     font-weight: bold;
 }
 
-#mopedList {
-
-    margin-top: 20px;
-}
-
 .moped-card {
-
     background: #303030;
-
     padding: 15px;
-
     margin-top: 10px;
-
     border-radius: 12px;
 }
 
 .moped-card h3 {
-
     margin-top: 0;
 }
 
-
-/* =========================
-   INFO
-   ========================= */
+.moped-card button {
+    background: #dc2626 !important;
+}
 
 .info {
-
     text-align: center;
-
     padding: 25px;
-
     color: #777;
-
     font-size: 13px;
 }
 
@@ -271,205 +165,179 @@ header p {
 
 <body>
 
-
 <div class="app">
 
 
 <header>
 
-    <h1>🏍️ Moped-Navigator</h1>
+<h1>🏍️ Moped-Navigator</h1>
 
-    <p>
-        Dein Begleiter auf jeder Fahrt
-    </p>
+<p>
+Dein Begleiter auf jeder Fahrt
+</p>
 
 </header>
 
 
-<!-- =========================
-     KARTE
-     ========================= -->
+<!-- KARTE -->
 
 <div id="map"></div>
 
 
-<div
-    class="gps-status"
-    id="gpsStatus"
->
+<!-- GPS STATUS -->
 
-    📍 GPS noch nicht gestartet
+<div
+class="gps-status"
+id="gpsStatus">
+
+📍 GPS noch nicht gestartet
 
 </div>
 
 
-<!-- =========================
-     FAHRDATEN
-     ========================= -->
+<!-- FAHRDATEN -->
 
 <div class="stats">
 
 
-    <div class="stat">
+<div class="stat">
 
-        <div class="stat-title">
+<div class="stat-title">
+Geschwindigkeit
+</div>
 
-            Geschwindigkeit
+<div
+class="stat-value"
+id="speed">
 
-        </div>
+0 km/h
 
-        <div
-            class="stat-value"
-            id="speed"
-        >
+</div>
 
-            0 km/h
-
-        </div>
-
-    </div>
+</div>
 
 
-    <div class="stat">
+<div class="stat">
 
-        <div class="stat-title">
+<div class="stat-title">
+Strecke
+</div>
 
-            Strecke
+<div
+class="stat-value"
+id="distance">
 
-        </div>
+0,00 km
 
-        <div
-            class="stat-value"
-            id="distance"
-        >
+</div>
 
-            0,00 km
-
-        </div>
-
-    </div>
+</div>
 
 
-    <div class="stat">
+<div class="stat">
 
-        <div class="stat-title">
+<div class="stat-title">
+Fahrzeit
+</div>
 
-            Fahrzeit
+<div
+class="stat-value"
+id="time">
 
-        </div>
+00:00
 
-        <div
-            class="stat-value"
-            id="time"
-        >
+</div>
 
-            00:00
-
-        </div>
-
-    </div>
+</div>
 
 
-    <div class="stat">
+<div class="stat">
 
-        <div class="stat-title">
+<div class="stat-title">
+Höhe
+</div>
 
-            Höhe
+<div
+class="stat-value"
+id="altitude">
 
-        </div>
+-- m
 
-        <div
-            class="stat-value"
-            id="altitude"
-        >
+</div>
 
-            -- m
-
-        </div>
-
-    </div>
+</div>
 
 
 </div>
 
 
-<!-- =========================
-     FAHRT BUTTON
-     ========================= -->
+<!-- START -->
 
 <button
-    class="start-button"
-    id="startButton"
-    onclick="toggleRide()"
->
+class="start-button"
+id="startButton"
+onclick="toggleRide()">
 
-    🏁 FAHRT STARTEN
+🏁 FAHRT STARTEN
 
 </button>
 
 
-<!-- =========================
-     MOPEDS
-     ========================= -->
+<!-- MOPEDS -->
 
 <div id="moped-section">
 
-    <h2>🛵 Meine Mopeds</h2>
+<h2>🛵 Meine Mopeds</h2>
 
 
-    <input
-        id="mopedName"
-        type="text"
-        placeholder="Name, z. B. Mein Moped"
-    >
+<input
+id="mopedName"
+type="text"
+placeholder="Name, z. B. Mein Moped">
 
 
-    <input
-        id="mopedModel"
-        type="text"
-        placeholder="Modell"
-    >
+<input
+id="mopedModel"
+type="text"
+placeholder="Modell">
 
 
-    <input
-        id="tankSize"
-        type="number"
-        step="0.1"
-        placeholder="Tankgröße (Liter)"
-    >
+<input
+id="tankSize"
+type="number"
+step="0.1"
+placeholder="Tankgröße (Liter)">
 
 
-    <input
-        id="consumption"
-        type="number"
-        step="0.1"
-        placeholder="Verbrauch (L/100 km)"
-    >
+<input
+id="consumption"
+type="number"
+step="0.1"
+placeholder="Verbrauch (L/100 km)">
 
 
-    <input
-        id="currentFuel"
-        type="number"
-        step="0.1"
-        placeholder="Aktueller Tankinhalt (Liter)"
-    >
+<input
+id="currentFuel"
+type="number"
+step="0.1"
+placeholder="Aktueller Tankinhalt (Liter)">
 
 
-    <button onclick="saveNewMoped()">
+<button onclick="saveNewMoped()">
 
-        🛵 Moped hinzufügen
+🛵 Moped hinzufügen
 
-    </button>
+</button>
 
 
-    <div id="mopedList"></div>
+<div id="mopedList"></div>
 
 </div>
 
 
 <div class="info">
 
-    Moped-Navigator – Version 0.3
+Moped-Navigator – Version 0.4
 
 </div>
 
@@ -477,19 +345,16 @@ header p {
 </div>
 
 
-<!-- =========================
-     LEAFLET
-     ========================= -->
-
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script
+src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+</script>
 
 
 <script>
 
-
-/* =========================
-   VARIABLEN
-   ========================= */
+/* =====================================
+   GRUNDEINSTELLUNGEN
+   ===================================== */
 
 let map;
 
@@ -512,9 +377,9 @@ let lastPosition = null;
 let routeCoordinates = [];
 
 
-/* =========================
-   KARTE ERSTELLEN
-   ========================= */
+/* =====================================
+   KARTE
+   ===================================== */
 
 map = L.map("map").setView(
     [51.1657, 10.4515],
@@ -523,41 +388,30 @@ map = L.map("map").setView(
 
 
 L.tileLayer(
-
     "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-
     {
-
         attribution:
-            "&copy; OpenStreetMap-Mitwirkende"
-
+        "&copy; OpenStreetMap-Mitwirkende"
     }
-
 ).addTo(map);
 
 
-/* =========================
+/* =====================================
    ROUTE
-   ========================= */
+   ===================================== */
 
 routeLine = L.polyline(
-
     [],
-
     {
-
         color: "#2563eb",
-
         weight: 5
-
     }
-
 ).addTo(map);
 
 
-/* =========================
+/* =====================================
    START / STOP
-   ========================= */
+   ===================================== */
 
 function toggleRide() {
 
@@ -574,9 +428,9 @@ function toggleRide() {
 }
 
 
-/* =========================
+/* =====================================
    FAHRT STARTEN
-   ========================= */
+   ===================================== */
 
 function startRide() {
 
@@ -585,10 +439,9 @@ function startRide() {
         document.getElementById(
             "gpsStatus"
         ).innerText =
-            "❌ GPS wird nicht unterstützt.";
+        "❌ GPS wird nicht unterstützt.";
 
         return;
-
     }
 
 
@@ -610,25 +463,25 @@ function startRide() {
     document.getElementById(
         "distance"
     ).innerText =
-        "0,00 km";
+    "0,00 km";
 
 
     document.getElementById(
         "speed"
     ).innerText =
-        "0 km/h";
+    "0 km/h";
 
 
     document.getElementById(
         "startButton"
     ).innerText =
-        "🛑 FAHRT BEENDEN";
+    "🛑 FAHRT BEENDEN";
 
 
     document.getElementById(
         "gpsStatus"
     ).innerText =
-        "📍 GPS wird gesucht...";
+    "📍 GPS wird gesucht...";
 
 
     timer = setInterval(
@@ -638,30 +491,28 @@ function startRide() {
 
 
     watchId =
-        navigator.geolocation.watchPosition(
+    navigator.geolocation.watchPosition(
 
-            updateGPS,
+        updateGPS,
 
-            gpsError,
+        gpsError,
 
-            {
+        {
+            enableHighAccuracy: true,
 
-                enableHighAccuracy: true,
+            maximumAge: 1000,
 
-                maximumAge: 1000,
+            timeout: 10000
+        }
 
-                timeout: 10000
-
-            }
-
-        );
+    );
 
 }
 
 
-/* =========================
+/* =====================================
    FAHRT BEENDEN
-   ========================= */
+   ===================================== */
 
 function stopRide() {
 
@@ -675,7 +526,6 @@ function stopRide() {
         );
 
         watchId = null;
-
     }
 
 
@@ -684,50 +534,131 @@ function stopRide() {
         clearInterval(timer);
 
         timer = null;
-
     }
+
+
+    document.getElementById(
+        "speed"
+    ).innerText =
+    "0 km/h";
 
 
     document.getElementById(
         "startButton"
     ).innerText =
-        "🏁 FAHRT STARTEN";
+    "🏁 FAHRT STARTEN";
 
 
     document.getElementById(
         "gpsStatus"
     ).innerText =
-        "⏹️ Fahrt beendet";
+    "⏹️ Fahrt beendet";
 
 }
 
 
-/* =========================
+/* =====================================
    GPS
-   ========================= */
+   ===================================== */
 
 function updateGPS(position) {
 
+    if (!running) {
+        return;
+    }
+
 
     const latitude =
-        position.coords.latitude;
+    position.coords.latitude;
 
 
     const longitude =
-        position.coords.longitude;
+    position.coords.longitude;
 
 
     const accuracy =
-        position.coords.accuracy;
+    position.coords.accuracy;
 
 
-    const speedGPS =
-        position.coords.speed;
+    const gpsSpeed =
+    position.coords.speed;
 
 
     const altitude =
-        position.coords.altitude;
+    position.coords.altitude;
 
+
+    /* =================================
+       SCHLECHTES GPS IGNORIEREN
+       ================================= */
+
+    if (accuracy > 30) {
+
+        document.getElementById(
+            "gpsStatus"
+        ).innerText =
+        "📍 GPS wird verbessert... Genauigkeit "
+        + Math.round(accuracy)
+        + " m";
+
+        return;
+    }
+
+
+    /* =================================
+       GESCHWINDIGKEIT
+       ================================= */
+
+    let speed = 0;
+
+
+    if (
+        gpsSpeed !== null &&
+        gpsSpeed >= 0
+    ) {
+
+        speed = gpsSpeed * 3.6;
+
+    }
+
+
+    /*
+    GPS kann im Stand kleine
+    falsche Geschwindigkeiten melden.
+    */
+
+    if (speed < 3) {
+
+        speed = 0;
+
+    }
+
+
+    document.getElementById(
+        "speed"
+    ).innerText =
+    Math.round(speed)
+    + " km/h";
+
+
+    /* =================================
+       HÖHE
+       ================================= */
+
+    if (altitude !== null) {
+
+        document.getElementById(
+            "altitude"
+        ).innerText =
+        Math.round(altitude)
+        + " m";
+
+    }
+
+
+    /* =================================
+       AKTUELLE POSITION
+       ================================= */
 
     const current = {
 
@@ -738,193 +669,112 @@ function updateGPS(position) {
     };
 
 
-    /* =========================
-       GESCHWINDIGKEIT
-       ========================= */
-
-    let speed = 0;
-
-
-    if (
-        speedGPS !== null &&
-        speedGPS >= 0
-    ) {
-
-        speed =
-            speedGPS * 3.6;
-
-
-        if (speed < 2) {
-
-            speed = 0;
-
-        }
-
-    }
-
-
-    document.getElementById(
-        "speed"
-    ).innerText =
-        Math.round(speed)
-        + " km/h";
-
-
-    /* =========================
-       HÖHE
-       ========================= */
-
-    if (altitude !== null) {
-
-        document.getElementById(
-            "altitude"
-        ).innerText =
-            Math.round(altitude)
-            + " m";
-
-    }
-
-
-    /* =========================
+    /* =================================
        MARKER
-       ========================= */
+       ================================= */
 
     if (!userMarker) {
 
-
-        userMarker = L.marker(
-
-            [
-                latitude,
-                longitude
-            ]
-
-        )
-
+        userMarker =
+        L.marker([
+            latitude,
+            longitude
+        ])
         .addTo(map)
-
         .bindPopup(
             "📍 Deine Position"
         );
 
 
         map.setView(
-
             [
                 latitude,
                 longitude
             ],
-
             17
-
         );
-
 
     } else {
 
-
-        userMarker.setLatLng(
-
-            [
-                latitude,
-                longitude
-            ]
-
-        );
-
-
-        map.panTo(
-
-            [
-                latitude,
-                longitude
-            ]
-
-        );
+        userMarker.setLatLng([
+            latitude,
+            longitude
+        ]);
 
     }
 
 
-    /* =========================
+    /* =================================
        STRECKE
-       ========================= */
+       ================================= */
 
     if (lastPosition) {
 
-
         const distance =
-            map.distance(
+        map.distance(
 
-                [
-                    lastPosition.lat,
-                    lastPosition.lng
-                ],
+            [
+                lastPosition.lat,
+                lastPosition.lng
+            ],
 
-                [
-                    current.lat,
-                    current.lng
-                ]
+            [
+                current.lat,
+                current.lng
+            ]
 
-            );
+        );
 
 
         /*
-        GPS-Ungenauigkeit
-        herausfiltern
+        Nur echte Bewegungen zählen.
+
+        Unter 5 Meter:
+        wahrscheinlich GPS-Schwankung.
+
+        Über 300 Meter:
+        wahrscheinlich GPS-Sprung.
         */
 
         if (
-
-            accuracy <= 30 &&
-
-            distance >= 3 &&
-
-            distance < 500
-
+            distance >= 5 &&
+            distance <= 300
         ) {
 
-            totalDistance +=
-                distance;
+            totalDistance += distance;
 
         }
 
     }
 
 
-    lastPosition =
-        current;
+    lastPosition = current;
 
+
+    /* =================================
+       STRECKE ANZEIGEN
+       ================================= */
 
     document.getElementById(
         "distance"
     ).innerText =
 
-        (
-            totalDistance / 1000
-        )
-
-        .toFixed(2)
-
-        .replace(
-            ".",
-            ","
-        )
-
-        + " km";
+    (
+        totalDistance / 1000
+    )
+    .toFixed(2)
+    .replace(".", ",")
+    + " km";
 
 
-    /* =========================
+    /* =================================
        ROUTE
-       ========================= */
+       ================================= */
 
-    routeCoordinates.push(
-
-        [
-            latitude,
-            longitude
-        ]
-
-    );
+    routeCoordinates.push([
+        latitude,
+        longitude
+    ]);
 
 
     routeLine.setLatLngs(
@@ -932,171 +782,159 @@ function updateGPS(position) {
     );
 
 
-    /* =========================
-       GPS STATUS
-       ========================= */
+    /* =================================
+       STATUS
+       ================================= */
 
     document.getElementById(
         "gpsStatus"
     ).innerText =
 
-        "📍 GPS aktiv • Genauigkeit ca. "
-
-        + Math.round(accuracy)
-
-        + " m";
+    "📍 GPS aktiv • Genauigkeit ca. "
+    + Math.round(accuracy)
+    + " m";
 
 }
 
 
-/* =========================
+/* =====================================
    GPS FEHLER
-   ========================= */
+   ===================================== */
 
 function gpsError(error) {
 
-
-    let message =
-        "❌ GPS konnte nicht verwendet werden.";
-
-
     if (error.code === 1) {
 
-        message =
-            "❌ Standortzugriff wurde verweigert.";
+        document.getElementById(
+            "gpsStatus"
+        ).innerText =
+        "❌ Standortzugriff verweigert.";
 
     }
 
+    else if (error.code === 2) {
 
-    if (error.code === 2) {
-
-        message =
-            "❌ Standort konnte nicht gefunden werden.";
-
-    }
-
-
-    if (error.code === 3) {
-
-        message =
-            "❌ GPS-Zeitüberschreitung.";
+        document.getElementById(
+            "gpsStatus"
+        ).innerText =
+        "❌ Standort nicht gefunden.";
 
     }
 
+    else if (error.code === 3) {
 
-    document.getElementById(
-        "gpsStatus"
-    ).innerText =
-        message;
+        document.getElementById(
+            "gpsStatus"
+        ).innerText =
+        "❌ GPS-Zeitüberschreitung.";
+
+    }
+
+    else {
+
+        document.getElementById(
+            "gpsStatus"
+        ).innerText =
+        "❌ GPS-Fehler.";
+
+    }
 
 }
 
 
-/* =========================
+/* =====================================
    FAHRZEIT
-   ========================= */
+   ===================================== */
 
 function updateTime() {
 
-
     if (!running) {
-
         return;
-
     }
 
 
     const elapsed =
-
-        Math.floor(
-
-            (
-                Date.now()
-                - startTime
-            ) / 1000
-
-        );
+    Math.floor(
+        (Date.now() - startTime) / 1000
+    );
 
 
     const minutes =
-        Math.floor(
-            elapsed / 60
-        );
+    Math.floor(elapsed / 60);
 
 
     const seconds =
-        elapsed % 60;
+    elapsed % 60;
 
 
     document.getElementById(
         "time"
     ).innerText =
 
-        String(minutes)
-            .padStart(2, "0")
+    String(minutes)
+    .padStart(2, "0")
 
-        + ":"
+    + ":"
 
-        + String(seconds)
-            .padStart(2, "0");
+    + String(seconds)
+    .padStart(2, "0");
 
 }
-
 
 </script>
 
 
-<!-- =========================
-     MOPED-DATEN
-     ========================= -->
+<!-- =====================================
+     MOPED-DATEI
+     ===================================== -->
 
 <script src="mopeds.js"></script>
 
 
 <script>
 
+/* =====================================
+   NEUES MOPED
+   ===================================== */
 
 function saveNewMoped() {
 
-
     const name =
-        document.getElementById(
-            "mopedName"
-        ).value;
+    document.getElementById(
+        "mopedName"
+    ).value.trim();
 
 
     const model =
-        document.getElementById(
-            "mopedModel"
-        ).value;
+    document.getElementById(
+        "mopedModel"
+    ).value.trim();
 
 
     const tankSize =
-        document.getElementById(
-            "tankSize"
-        ).value;
+    document.getElementById(
+        "tankSize"
+    ).value;
 
 
     const consumption =
-        document.getElementById(
-            "consumption"
-        ).value;
+    document.getElementById(
+        "consumption"
+    ).value;
 
 
     const currentFuel =
-        document.getElementById(
-            "currentFuel"
-        ).value;
+    document.getElementById(
+        "currentFuel"
+    ).value;
 
 
     if (
-
         !name ||
         !model ||
         !tankSize ||
         !consumption ||
         !currentFuel
-
     ) {
 
         alert(
@@ -1104,18 +942,15 @@ function saveNewMoped() {
         );
 
         return;
-
     }
 
 
     addMoped(
-
         name,
         model,
         tankSize,
         consumption,
         currentFuel
-
     );
 
 
@@ -1149,78 +984,85 @@ function saveNewMoped() {
 }
 
 
-/* =========================
+/* =====================================
    MOPEDS ANZEIGEN
-   ========================= */
+   ===================================== */
 
 function showMopeds() {
 
-
     const list =
-        document.getElementById(
-            "mopedList"
-        );
+    document.getElementById(
+        "mopedList"
+    );
 
 
     const mopeds =
-        getMopeds();
+    getMopeds();
 
 
     list.innerHTML = "";
 
 
     mopeds.forEach(
-
         function(moped) {
 
 
             const range =
-                calculateRange(
-                    moped
-                );
+            calculateRange(moped);
 
 
             list.innerHTML += `
 
-                <div class="moped-card">
+            <div class="moped-card">
 
-                    <h3>
-                        🛵 ${moped.name}
-                    </h3>
+                <h3>
+                    🛵 ${moped.name}
+                </h3>
 
-                    <p>
-                        Modell:
-                        ${moped.model}
-                    </p>
+                <p>
+                    Modell:
+                    ${moped.model}
+                </p>
 
-                    <p>
-                        Reichweite:
-                        ${range.toFixed(0)}
-                        km
-                    </p>
+                <p>
+                    Tank:
+                    ${moped.currentFuel}
+                    L
+                </p>
 
-                    <button
-                        onclick="removeMoped(${moped.id})"
-                    >
+                <p>
+                    Verbrauch:
+                    ${moped.consumption}
+                    L/100 km
+                </p>
 
-                        🗑️ Löschen
+                <p>
+                    🔋 Reichweite:
+                    ${range.toFixed(0)}
+                    km
+                </p>
 
-                    </button>
+                <button
+                    onclick="removeMoped(${moped.id})"
+                >
 
-                </div>
+                    🗑️ Moped löschen
+
+                </button>
+
+            </div>
 
             `;
 
         }
-
     );
 
 }
 
 
-/* =========================
+/* =====================================
    MOPED LÖSCHEN
-   ========================= */
+   ===================================== */
 
 function removeMoped(id) {
 
@@ -1231,12 +1073,11 @@ function removeMoped(id) {
 }
 
 
-/* =========================
+/* =====================================
    MOPEDS LADEN
-   ========================= */
+   ===================================== */
 
 showMopeds();
-
 
 </script>
 
