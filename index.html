@@ -469,5 +469,71 @@ function updateTime() {
 
 </script>
 <script src="mopeds.js"></script>
+ <div id="moped-section">
+  <h2>🛵 Meine Mopeds</h2>
+
+  <input id="mopedName" type="text" placeholder="Name, z. B. Mein Moped">
+  <input id="mopedModel" type="text" placeholder="Modell">
+  <input id="tankSize" type="number" placeholder="Tankgröße (Liter)">
+  <input id="consumption" type="number" step="0.1" placeholder="Verbrauch (L/100 km)">
+  <input id="currentFuel" type="number" step="0.1" placeholder="Aktueller Tankinhalt (Liter)">
+
+  <button onclick="saveNewMoped()">Moped hinzufügen</button>
+
+  <div id="mopedList"></div>
+</div>
+
+<script>
+function saveNewMoped() {
+  const name = document.getElementById("mopedName").value;
+  const model = document.getElementById("mopedModel").value;
+  const tankSize = document.getElementById("tankSize").value;
+  const consumption = document.getElementById("consumption").value;
+  const currentFuel = document.getElementById("currentFuel").value;
+
+  if (!name || !model || !tankSize || !consumption || !currentFuel) {
+    alert("Bitte alle Felder ausfüllen.");
+    return;
+  }
+
+  addMoped(name, model, tankSize, consumption, currentFuel);
+
+  document.getElementById("mopedName").value = "";
+  document.getElementById("mopedModel").value = "";
+  document.getElementById("tankSize").value = "";
+  document.getElementById("consumption").value = "";
+  document.getElementById("currentFuel").value = "";
+
+  showMopeds();
+}
+
+function showMopeds() {
+  const list = document.getElementById("mopedList");
+  const mopeds = getMopeds();
+
+  list.innerHTML = "";
+
+  mopeds.forEach(moped => {
+    const range = calculateRange(moped);
+
+    list.innerHTML += `
+      <div>
+        <h3>${moped.name}</h3>
+        <p>Modell: ${moped.model}</p>
+        <p>Reichweite: ${range.toFixed(0)} km</p>
+        <button onclick="removeMoped(${moped.id})">Löschen</button>
+      </div>
+    `;
+  });
+}
+
+function removeMoped(id) {
+  deleteMoped(id);
+  showMopeds();
+}
+
+showMopeds();
+</script>   
+    
 </body>
 </html>
